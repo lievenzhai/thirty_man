@@ -1,0 +1,35 @@
+{% from 'bootstrap/form.html' import render_form %}
+
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    {% if current_user.is_authenticated %}
+    <a href="#">编辑</a>
+    <form action="{{ url_for('admin.delete_post', post_id=post.id, next=url_for('blog.index')) }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="submit" value="删除文章" onclick="return confirm('你确定要删除吗？'); ">
+    </form>
+    {% endif %}
+    <small>
+        分类：{{ post.category.name }}
+        时间：{{ post.timestamp }}
+        <br>
+    </small>
+
+<div class="row">
+    <div class="col-md-8">
+        <p>{{ post.body|safe }}</p>
+        <div class="comments" id="#comments">{% include 'blog/show_comment.html' %}</div>
+        {% if request.args.get('reply') %}
+            <div class="alert alert-dark">
+                回复<strong>{{ request.args.get('author') }}</strong>:
+                <a href="{{ url_for('blog.show_post', post_id=post.id) }}" class="float-right">取消</a>
+            </div>
+        {% endif %}
+        <div>{{ render_form(form) }}</div>
+    </div>
+    <div class="col-md-4">
+        {% include 'blog/_sidebar.html' %}
+    </div>
+</div>
+{% endblock content %}

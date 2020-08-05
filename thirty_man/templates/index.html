@@ -1,0 +1,21 @@
+{% from 'bootstrap/pagination.html' import render_pager %}
+{% extends 'base.html' %}
+{% block title %}主页{% endblock title %}
+{% block content %}
+    <div class="page-header">
+        <h1 class="display-3">{{ admin.bolg_title|default('博客标题') }}</h1>
+        <h4 class="text-muted">{{ admin.blog_sub_title|default('博客副标题') }}</h4>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+            {% include 'blog/post_list.html' %}
+            {% if posts %}
+                <div class="page-footer">{{ render_pager(pagination) }}</div>
+            {% endif %}
+        </div>
+        <div class="col-sm-4 sidebar" >
+            {% include 'blog/_sidebar.html' %}
+        </div>
+    </div>
+
+{% endblock content %}

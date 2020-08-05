@@ -1,0 +1,40 @@
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% if comments %}
+    {% for comment in comments %}
+        <ul class="list-group">
+          <li class="list-group-item">
+            <span class="badge">{{ comment.replies|length }}</span>
+            <h5 class="mb-1">
+                <a href="{% if comment.site %}{{ comment.site }}{% else %}#{% endif %}" target="_blank">
+                {% if comment.from_admin %}
+                    {{ admin.name }}
+                {% else %}
+                    {{ comment.author }}
+                {% endif %}
+                </a>
+                {% if comment.from_admin %}
+                    <span class="badge badge-primary">作者</span>
+                {% endif %}
+                {% if comment.replied %}
+                    <span class="badge badge-light">回复</span>
+                {% endif %}
+            </h5>
+            <small>{{ moment(comment.timestamp).fromNow() }}</small>
+            {% if comment.replied %}
+            <p>{{ comment.replied.author }}<br>{{ comment.replied.body }}</p>
+            {% endif %}
+            <p class="mb-1">{{ comment.body }}</p>
+            <div class="float-right">
+                <a href="{{ url_for('blog.reply_comment', comment_id=comment.id) }}" class="btn btn-light btn-sm">回复</a>
+            </div>
+          </li>
+        {% endfor %}
+        </ul>
+{% else %}
+<div class="tip"><h5>没有评论</h5></div>
+{% endif %}
+
+{% if comments %}
+    {{ render_pagination(pagination, fragment='#comments') }}
+{% endif %}
